@@ -1,0 +1,235 @@
+html {
+    height: 100%;
+}
+
+body {
+    /*border: 4px solid red;*/
+    height: 100%;
+}
+
+ul {
+    list-style: none;
+}
+
+.bold {
+    font-weight: 500;
+}
+
+.container1 {
+    /*border: 4px solid orange;*/
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.row1 {
+    /*border: 4px solid yellow;*/
+    padding: 20px 0 0 0;
+    text-align: center;
+}
+
+.titleCol {
+    /*border: 4px solid purple;*/
+}
+
+.title {
+    /*border: 4px solid blue;*/
+    font-family: 'Bungee Shade', cursive;
+    font-size: 5em;
+    text-align: center;
+    margin: 0 auto 20px auto;
+}
+
+.searchCol {
+    /*border: 4px solid orange;*/
+}
+
+.searchInput {
+    /*border: 4px solid red;*/
+    font-size: 2em;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 200;
+    padding: 5px 0 5px 20px;
+    width: 100%;
+    margin: 0 0 30px 0;
+}
+
+.searchInput:focus {
+    outline: 2px solid #d53b3b;
+}
+
+.row2 {
+    /*border: 4px solid green;*/
+    flex-grow: 2;
+    display: flex;
+    justify-content: center;
+    padding: 30px 0 0 0;
+}
+
+.uiview {
+    border: 4px solid blue;
+    display: flex;
+    flex-direction: column;
+    transition: all .25s ease-in-out;
+    -moz-transition: all .25s ease-in-out;
+    -webkit-transition: all .25s ease-in-out;
+}
+
+.nav {
+    /*border: 4px solid red;*/
+    display: flex;
+    padding: 0 0 0 0;
+    font-family: 'Work Sans', sans-serif;
+}
+
+.navButtons {
+    /*border: 4px solid purple;*/
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 0;
+    width: 70%;
+}
+
+.slideButtons {
+    /*border: 4px solid blue;*/
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 0 0 0;
+    width: 30%;
+}
+
+.show {
+    text-transform: uppercase;
+}
+
+.switchdiv {
+    /*border: 4px solid green;*/
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.switchlabel {
+    /*border: 4px solid red;*/
+    align-self: center;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-moviered,
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-moviered{
+  color: #fff;
+  background: #d53b3b;
+}
+
+.modeButton {
+    /*border: 1px solid green;*/
+    color: #000;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 400;
+    font-size: 1.3em;
+    padding: 0 10px 5px 10px;
+}
+
+.modeButton:link{}
+.modeButton:visited{}
+.modeButton:hover{color: #d53b3b; text-decoration: none;}
+.modeButton:active{color: #d53b3b;}
+.modeButton:focus{color: #d53b3b; text-decoration: none;}
+
+.link-active {
+    border-bottom: 2px solid #d53b3b;
+}
+
+.navButtonsSelect {
+    border: 4px solid orange;
+    display: none;
+}
+
+.searchResults {
+    /*border: 4px solid red;*/
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.searchResult  {
+    /*border: 4px solid green;*/
+}
+
+.overlay-title {
+    /*border: 4px solid yellow;*/
+    position: absolute;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 20px 0 20px;
+    color: #fff;
+    font-size: 2.5em;
+    font-family: 'Work Sans', sans-serif;
+    width: 300px;
+    height: 450px;
+    opacity: 0;
+    background-color: rgba(213, 59, 59, 0.9);()
+    transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    -webkit-transition: opacity .25s ease-in-out;
+}
+
+.overlay-title:hover {
+    opacity: 1;
+}
+
+.poster {
+    width: 300px;
+    height: 450px;
+}
+
+.movieDetails {
+    border: 4px solid orange;
+    display: flex;
+}
+
+.moviePoster {
+    border: 4px solid blue;
+}
+
+.movieInfo {
+    border: 4px solid red;
+    display: flex;
+    flex-direction: column;
+    padding: 0 30px 0 30px;
+}
+
+.detailTitle {
+    font-family: 'Work Sans', sans-serif;
+}
+
+.summary {
+    margin-top: 40px;
+    font-size: 1.4em;
+    font-family: 'Work Sans', sans-serif;
+}
+
+@media (max-width: 768px){
+    .title {
+        font-size: 4em;
+        text-align: center;
+    }
+
+    .navButtons {
+        display: none;
+    }
+
+    .navButtonsSelect {
+        display: flex;
+        justify-content: center;
+    }
+
+    .selectDropDown {
+        width: 80%;
+    }
+}
