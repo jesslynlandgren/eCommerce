@@ -1,0 +1,13 @@
+<div class="productDetails">
+    <button class="btn btn-warning" type="button" ng-click="addToCart(product.id)">Add to Cart</button>
+    <div class="productInGrid">
+        <img class="prodimg" ng-src="/img/{{product.image_path}}" alt="" />
+    </div>
+    <div class="productInfo">
+        <h1 class="productTitle">{{product.title}}</h1>
+        <div class="summary">
+            <span class="bold">Summary:</span>
+            <p>{{product.description}}</p>
+        </div>
+    </div>
+</div>

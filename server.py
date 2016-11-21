@@ -20,8 +20,8 @@ def products():
 # Returns a single product
 @app.route('/api/product/<productId>')
 def product(productId):
-    prod_id = db.query('select * from product where id = $1', productId).dictresult()
-    return jsonify(prod_id)
+    product = db.query('select * from product where id = $1', productId).dictresult()[0]
+    return jsonify(product)
 
 # Allows a customer to sign up for the site
 @app.route('/api/customer/signup', methods=['POST'])
@@ -58,7 +58,7 @@ def login():
         # Store created auth token in database
         db.insert('auth_token', token=token, customer_id=customer['id'])
         # Creates object of user information and the new auth token to return
-        loggedin = {"user": {'username': customer['username'], 'email': customer['email'], 'first_name': customer['first_name'], 'last_name': customer['last_name']}, 'authtoken': token}
+        loggedin = {"user": {'username': customer['username'], 'email': customer['email'], 'first_name': customer['first_name'], 'last_name': customer['last_name']}, 'auth_token': token}
         #Retuns user info and auth token in JSON format
         return jsonify(loggedin)
     else:
@@ -73,6 +73,7 @@ def login():
 def shopping_cart():
     # Validates auth_token
     auth_token = request.get_json().get('auth_token')
+    print auth_token
     check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
     if len(check_token) > 0:
         #If authenticated user

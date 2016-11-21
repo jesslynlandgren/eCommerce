@@ -1,19 +1,26 @@
-var app = angular.module('sailfish', ['ui.router']);
+var app = angular.module('sailfish', ['ui.router', 'ngCookies']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state({
-            name: 'all_products',
-            url: '/all_products',
-            templateUrl: 'all_products.html',
-            controller: 'HomeController'
+            name: 'products',
+            url: '/products',
+            templateUrl: 'products.html',
+            controller: 'ProductsController'
         })
-    $urlRouterProvider.otherwise('/now_playing');
+
+        .state({
+            name: 'product',
+            url: '/{id}',
+            templateUrl: 'product.html',
+            controller: 'ProductController'
+        })
+    $urlRouterProvider.otherwise('/products');
 });
 
-app.factory('CommerceService', function($http) {
+app.factory('API', function($http) {
 
-    var service = {};
+    var service = {'auth_token':''};
 
     service.allProducts = function() {
         var url = 'http://localhost:5000/api/products';
@@ -22,12 +29,128 @@ app.factory('CommerceService', function($http) {
             url: url
         });
     };
+
+    service.getProduct = function(productId) {
+        var url = 'http://localhost:5000/api/product/' + productId;
+        return $http({
+            method: 'GET',
+            url: url
+        });
+    };
+
+    service.login = function(formData) {
+        var url = 'http://localhost:5000/api/user/login';
+        return $http({
+            method: 'POST',
+            url: url,
+            data: formData
+        });
+    };
+
+    service.signup = function(formData) {
+        var url = 'http://localhost:5000/api/customer/signup';
+        return $http({
+            method: 'POST',
+            url: url,
+            data: formData
+        });
+    };
+
+    service.addToCart = function(token, product_id) {
+        var url = 'http://localhost:5000/api/shopping_cart';
+        return $http({
+            method: 'POST',
+            url: url,
+            data: {'auth_token': token,
+                   'product_id': product_id}
+        });
+    };
     return service;
 });
 
-app.controller('HomeController', function($scope, $state, MovieService){
-    CommerceService.allProducts()
+app.controller('NavController', function($scope, $state, $cookies, $rootScope, API){
+    $scope.login = false;
+    $scope.loginerror = false;
+    $scope.loginform = {};
+    $scope.signup = false;
+    $scope.signuperror = false;
+    $scope.signupform = {};
+    if ($rootScope.user !== undefined){
+        $rootScope.loggedin = true;
+    } else {
+        try {
+            $rootScope.loggedin = true;
+            $rootScope.user = $cookies.getObject('user').user;
+            API.auth_token = $cookies.getObject('user').auth_token;
+        } catch (e) {
+
+        }
+    }
+    console.log($rootScope.loggedin);
+    $scope.openLogin = function(){
+        $scope.login= !$scope.login;
+        $scope.signup = false;
+    };
+    $scope.openSignUp = function(){
+        $scope.signup = !$scope.signup;
+        $scope.login = false;
+    };
+
+    $scope.submitLogin = function() {
+        API.login($scope.loginform).success(function(result){
+                $cookies.putObject('user', result);
+                API.auth_token = result.auth_token;
+                $rootScope.user = result.user;
+                $rootScope.loggedin = true;
+                $scope.login = false;
+                $state.go('products', {});
+            }).error(function(){
+                $scope.loginerror = true;
+            });
+    };
+
+    $scope.submitSignUp = function() {
+        API.signup($scope.signupform).success(function(){
+                $state.go('products', {});
+            }).error(function(){
+                $scope.signuperror = true;
+            });
+    };
+
+    $scope.logout = function() {
+        $cookies.remove('user');
+        API.auth_token = undefined;
+        $rootScope.user = undefined;
+        $rootScope.loggedin = false;
+    };
+});
+
+app.controller('ProductsController', function($scope, $state, API){
+    API.allProducts()
         .success(function(productResults) {
-            $scope.results = productResults;
+            $scope.products = productResults;
+        });
+});
+
+app.controller('ProductController', function($scope, $state, $stateParams, API){
+    API.getProduct($stateParams.id)
+        .success(function(product) {
+            $scope.product = product;
+        });
+    $scope.addToCart = function(){
+        console.log(API.auth_token);
+        console.log($stateParams.id);
+        API.addToCart(API.auth_token, $stateParams.id)
+            .success(function(result) {
+                console.log('added to cart')
+            });
+    };
+});
+
+
+app.controller('CartController', function($scope, $state, API){
+    API.viewCart()
+        .success(function(productResults) {
+            $scope.products = productResults;
         });
 });
