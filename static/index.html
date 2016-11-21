@@ -23,11 +23,11 @@
     <div class="container-fluid container1" ng-controller="NavController">
         <div class="row row1">
             <div class="col-sm-10 col-sm-offset-1 nav">
-                <h1 class="title">Sailfish Aquatics Store</h1>
-                <div class="" ng-show="loggedin" ng-model="user">
-                    Welcome {{user.first_name}}!
+                <a ui-sref="products"><h1 class="title text-primary">Sailfish Aquatics Store</h1></a>
+                <div class="" ng-show="loggedin">
+                    Welcome <strong>{{user.first_name}}</strong>!
                     <button class="btn btn-primary" type="button" ng-click="logout()">Log Out</button>
-                    <button class="btn btn-success" type="button" ng-click="logout()">View Cart</button>
+                    <button class="btn btn-success" type="button" ng-click="viewCart()">View Cart</button>
                 </div>
                 <div class="userDiv" ng-hide="loggedin">
                     <button class="btn btn-primary" type="button" ng-click="openLogin()">Login</button>

@@ -11,10 +11,18 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
         .state({
             name: 'product',
-            url: '/{id}',
+            url: 'products/{id}',
             templateUrl: 'product.html',
             controller: 'ProductController'
         })
+
+        .state({
+            name: 'view_cart',
+            url: '/products/cart',
+            templateUrl: 'cart.html',
+            controller: 'CartController'
+        });
+
     $urlRouterProvider.otherwise('/products');
 });
 
@@ -65,6 +73,18 @@ app.factory('API', function($http) {
                    'product_id': product_id}
         });
     };
+
+    service.getCart = function(token) {
+        var url = 'http://localhost:5000/api/shopping_cart';
+        return $http({
+            method: 'GET',
+            url: url,
+            params: {
+                auth_token: token
+            }
+        });
+    };
+
     return service;
 });
 
@@ -78,10 +98,11 @@ app.controller('NavController', function($scope, $state, $cookies, $rootScope, A
     if ($rootScope.user !== undefined){
         $rootScope.loggedin = true;
     } else {
+        $rootScope.loggedin = false;
         try {
-            $rootScope.loggedin = true;
             $rootScope.user = $cookies.getObject('user').user;
             API.auth_token = $cookies.getObject('user').auth_token;
+            $rootScope.loggedin = true;
         } catch (e) {
 
         }
@@ -123,6 +144,11 @@ app.controller('NavController', function($scope, $state, $cookies, $rootScope, A
         $rootScope.user = undefined;
         $rootScope.loggedin = false;
     };
+
+    $scope.viewCart = function() {
+        $state.go('view_cart', {});
+    };
+
 });
 
 app.controller('ProductsController', function($scope, $state, API){
@@ -138,19 +164,24 @@ app.controller('ProductController', function($scope, $state, $stateParams, API){
             $scope.product = product;
         });
     $scope.addToCart = function(){
-        console.log(API.auth_token);
-        console.log($stateParams.id);
         API.addToCart(API.auth_token, $stateParams.id)
             .success(function(result) {
-                console.log('added to cart')
+                console.log('added to cart');
             });
     };
 });
 
-
 app.controller('CartController', function($scope, $state, API){
-    API.viewCart()
-        .success(function(productResults) {
-            $scope.products = productResults;
+    API.getCart(API.auth_token)
+        .success(function(results) {
+            $scope.cart = results;
+            if ($scope.cart.length > 0){
+                $scope.hasItems = true;
+            } else {
+                $scope.hasItems = false;
+            }
+        })
+        .error(function(){
+            console.log("problem showing cart");
         });
 });

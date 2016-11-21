@@ -96,7 +96,7 @@ def get_shop():
         # If authenticated user
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         # Queries all products in the user's shopping cart
-        current_cart = db.query('select product.name as prodName, product.price as prodPrice, product.description as prodDescription, product.image_path as prodImg from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
+        current_cart = db.query('select product.name as name, product.price as price, product.description as description, product.image_path as image_path from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
         # Returns results in JSON format
         return jsonify(current_cart)
     else:
