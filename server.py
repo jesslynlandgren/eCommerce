@@ -3,13 +3,13 @@ import pg
 import bcrypt
 import uuid
 
-app = Flask('ECommerce')
+app = Flask('ECommerce', static_url_path='')
 db = pg.DB(dbname='ecommerce_db')
 
 # For testing purposes
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return app.send_static_file('index.html')
 
 # Returns all products
 @app.route('/api/products')
@@ -85,7 +85,7 @@ def shopping_cart():
         # If not authenticated user
         return 'Not authorized', 403
 
-
+# Returns all the products in the user's shopping_cart
 @app.route('/api/shopping_cart', methods=['GET'])
 def get_shop():
     # Validates auth_token
@@ -102,6 +102,7 @@ def get_shop():
         # If not authenicated user
         return 'Not authorized', 403
 
+# Checkout a user's shopping cart (purchase all the items)
 @app.route('/api/shopping_cart/checkout', methods=['POST'])
 def checkout():
     #Validates auth_token
@@ -112,7 +113,6 @@ def checkout():
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         # Queries all products in the user's shopping cart
         current_cart = db.query('select product.id as prod_id from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
-
         #Queries all products in the user's shopping cart and adds their prices for a total price of the current cart
         total = db.query('select sum(product.price) as total from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).namedresult()[0]
         # Creates a purchase record for the authenticated user and the total price of all the items in their current cart
