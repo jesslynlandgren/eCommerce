@@ -97,8 +97,10 @@ def get_shop():
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         # Queries all products in the user's shopping cart
         current_cart = db.query('select product.name as name, product.price as price, product.description as description, product.image_path as image_path from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
+
+        total = db.query('select sum(product.price) as total from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
         # Returns results in JSON format
-        return jsonify(current_cart)
+        return jsonify(current_cart,total)
     else:
         # If not authenicated user
         return 'Not authorized', 403
@@ -108,6 +110,8 @@ def get_shop():
 def checkout():
     #Validates auth_token
     auth_token = request.get_json().get('auth_token')
+    shipping = request.get_json().get('shipping')
+    print shipping
     check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
     if len(check_token) > 0:
         # If authenicated user
@@ -120,6 +124,8 @@ def checkout():
         db.insert('purchase', customer_id=customer.customer_id, total_price=total.total)
         # Queries the purchase id of the record inserted in the previous step
         purchase_id = db.query('select id from purchase order by id desc limit 1').namedresult()[0].id
+        # Insert the sthipping info into the shipping table with the corresponding purchase_id
+        db.insert('shipping', purchase_id=purchase_id, street=shipping['street'], city=shipping['city'], state=shipping['state'])
         # For each product being purchased (each product that is in the current_cart):
         for product in current_cart:
             # Add that product to the table of items purchased by each user and include the purchase id number

@@ -1,8 +1,7 @@
-<h1>ALL PRODUCTS</h1>
-
-<div class="productsGrid">
-    <div class="productInGrid" ng-repeat="product in products">
-        <!-- <span>{{product.name}}</span> -->
-        <img class="prodimg" ui-sref="product({id:product.id})" ng-src="/img/{{product.image_path}}" alt="" />
+<div class="col-sm-10 col-sm-offset-1">
+    <div class="productsGrid">
+        <div class="productInGrid" ng-repeat="product in products">
+            <img class="prodimg" ui-sref="product({id:product.id})" ng-src="/img/{{product.image_path}}" alt="" />
+        </div>
     </div>
 </div>

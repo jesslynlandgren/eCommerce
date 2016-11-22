@@ -11,7 +11,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
         .state({
             name: 'product',
-            url: 'products/{id}',
+            url: '/{id}',
             templateUrl: 'product.html',
             controller: 'ProductController'
         })
@@ -21,6 +21,20 @@ app.config(function($stateProvider, $urlRouterProvider) {
             url: '/products/cart',
             templateUrl: 'cart.html',
             controller: 'CartController'
+        })
+
+        .state({
+            name: 'checkout',
+            url: '/products/cart/checkout',
+            templateUrl: 'checkout.html',
+            controller: 'CheckoutController'
+        })
+
+        .state({
+            name: 'thank_you',
+            url: '/products/cart/checkout/thank_you',
+            templateUrl: 'thank_you.html',
+            controller: 'ThankYouController'
         });
 
     $urlRouterProvider.otherwise('/products');
@@ -82,6 +96,16 @@ app.factory('API', function($http) {
             params: {
                 auth_token: token
             }
+        });
+    };
+
+    service.checkout = function(token, shipping) {
+        var url = 'http://localhost:5000/api/shopping_cart/checkout';
+        return $http({
+            method: 'POST',
+            url: url,
+            data: {'auth_token': token,
+                   'shipping': shipping}
         });
     };
 
@@ -149,6 +173,15 @@ app.controller('NavController', function($scope, $state, $cookies, $rootScope, A
         $state.go('view_cart', {});
     };
 
+    API.getCart(API.auth_token)
+        .success(function(results) {
+            console.log($scope.numItems = results[0].length);
+        })
+        .error(function(){
+            console.log("problem showing cart");
+        });
+
+
 });
 
 app.controller('ProductsController', function($scope, $state, API){
@@ -174,7 +207,8 @@ app.controller('ProductController', function($scope, $state, $stateParams, API){
 app.controller('CartController', function($scope, $state, API){
     API.getCart(API.auth_token)
         .success(function(results) {
-            $scope.cart = results;
+            $scope.cart = results[0];
+            $scope.total = results[1][0].total;
             if ($scope.cart.length > 0){
                 $scope.hasItems = true;
             } else {
@@ -184,4 +218,35 @@ app.controller('CartController', function($scope, $state, API){
         .error(function(){
             console.log("problem showing cart");
         });
+});
+
+app.controller('CheckoutController', function($scope, $state, API){
+    $scope.shippingform = {};
+    $scope.paymentform = {};
+
+    API.getCart(API.auth_token)
+        .success(function(results) {
+            $scope.cart = results[0];
+            $scope.total = results[1][0].total;
+            if ($scope.cart.length > 0){
+                $scope.hasItems = true;
+            } else {
+                $state.go('view_cart');
+            }
+        })
+        .error(function(){
+            console.log("problem showing cart");
+        });
+
+    $scope.submitCheckoutForm = function() {
+        console.log($scope.shippingform);
+        API.checkout(API.auth_token, $scope.shippingform).success(function(){
+            $state.go('thank_you', {});
+        });
+
+    };
+});
+
+app.controller('ThankYouController', function($scope, $state, API){
+
 });

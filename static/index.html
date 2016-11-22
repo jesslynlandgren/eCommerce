@@ -19,87 +19,24 @@
     <script src="js/sailfish.js"></script>
 </head>
 
-<body ng-app="sailfish">
-    <div class="container-fluid container1" ng-controller="NavController">
-        <div class="row row1">
+<body ng-app="sailfish" ng-controller="NavController">
+    <div class="container-fluid container1">
+        <div id="row1" class="row row1">
             <div class="col-sm-10 col-sm-offset-1 nav">
-                <a ui-sref="products"><h1 class="title text-primary">Sailfish Aquatics Store</h1></a>
-                <div class="" ng-show="loggedin">
-                    Welcome <strong>{{user.first_name}}</strong>!
-                    <button class="btn btn-primary" type="button" ng-click="logout()">Log Out</button>
-                    <button class="btn btn-success" type="button" ng-click="viewCart()">View Cart</button>
+                <div class="col-sm-5">
+                    <h1 class="title text-primary"><img class="logo" ui-sref="products" ng-src="/img/sailfish_logo.png"></h1>
                 </div>
-                <div class="userDiv" ng-hide="loggedin">
-                    <button class="btn btn-primary" type="button" ng-click="openLogin()">Login</button>
-                    <div class="popupform loginform" ng-show="login">
-                        <h1>Login</h1>
-                        <form ng-submit="submitLogin()" name="loginForm" method="post" data-toggle="validator">
-                            <div class="loginerror" ng-show="loginerror">
-                                Login failed - try again!
-                            </div>
-                            <div class="form-group has-feedback">
-                                <label for="username"><span class="glyphicon glyphicon-user"></span> Username</label>
-                                <input ng-model="loginform.username" type="text" name="username" value="" class="form-control" placeholder="Enter your username" data-minlength="5" data-error="Usernames are 5+ characters" required>
-                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                            <div class="form-group has-feedback">
-                                <label for="password"><span class="glyphicon glyphicon-lock"></span> Enter a Password</label>
-                                <input ng-model="loginform.password" type="text" name="password" value="" class="form-control" placeholder="Enter your password" data-minlength="6" data-error="Passwords are 5+ characters" required>
-                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                            <button type="submit" class="btn btn-warning">Login</button>
-                        </form>
+                <div class="col-sm-7 userDiv">
+                    <div class="loginDiv" ng-show="loggedin">
+                        <div class="welcome">
+                            welcome&nbsp;<strong style="color: #0089d0;">{{user.first_name}}</strong>!
+                        </div>
+                        <button class="btn logout" type="button" ng-click="logout()">Log Out</button>
+                        <button class="btn viewcart" type="button" ng-click="viewCart()">View Cart&nbsp;&nbsp;<span class="badge">3</span></button>
                     </div>
-                    <button class="btn btn-warning" type="button" name="signup" ng-click="openSignUp()">Sign Up</button>
-                    <div class="popupform signupform" ng-show="signup">
-                        <h1>Sign Up</h1>
-                        <form ng-submit="submitSignUp()" class="sign-up" method="post" data-toggle="validator">
-                            <div class="signuperror" ng-show="signuperror">
-                                Username already taken!
-                            </div>
-                            <div class="form-group">
-                                <label for="first_name" class="control-label"><span class="glyphicon glyphicon-vcard"></span> Name</label>
-                                <div class="form-inline row">
-                                    <div class="form-group has-feedback col-sm-6">
-                                        <input ng-model="signupform.first_name" type="text" name="first_name" value="" class="form-control" placeholder="First name" required>
-                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                    <div class="form-group has-feedback col-sm-6">
-                                        <input ng-model="signupform.last_name" type="text" name="last_name" value="" class="form-control" placeholder="Last name" required>
-                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group has-feedback">
-                                <label for="email"><span class="glyphicon glyphicon-envelope"></span> Email</label>
-                                <input ng-model="signupform.email" type="email" name="email" value="" class="form-control" placeholder="Enter your email address" data-minlength="6" data-error="Not a valid email address" required>
-                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                            <div class="form-group has-feedback">
-                                <label for="username"><span class="glyphicon glyphicon-user"></span> Create a Username</label>
-                                <input ng-model="signupform.username" type="text" name="username" value="" class="form-control" placeholder="Enter a username" data-minlength="5" data-error="Usernames must be at least 5 characters" required>
-                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                            <div class="form-group has-feedback">
-                                <label for="password"><span class="glyphicon glyphicon-lock"></span> Enter a Password</label>
-                                <input id="firstpass" ng-model="signupform.password" type="text" name="password" value="" class="form-control" placeholder="Enter a password" data-minlength="5" data-error="Passwords must be at least 5 characters" required>
-                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                            <div class="form-group has-feedback">
-                                <label for="password2"><span class="glyphicon glyphicon-lock"></span> Confirm Password</label>
-                                <input type="text" name="password2" value="" class="form-control" placeholder="Enter a password" data-match="#firstpass" data-error="Passwords do not match" required>
-                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                            <button type="submit" class="btn btn-warning">Sign up</button>
-                        </form>
+                    <div class="loginDiv" ng-hide="loggedin">
+                        <button class="btn viewcart" type="button" ng-click="openLogin()">Login</button>
+                        <button class="btn viewcart" type="button" name="signup" ng-click="openSignUp()">Sign Up</button>
                     </div>
                 </div>
             </div>
@@ -107,6 +44,75 @@
         <div class="row row2">
             <ui-view class="view1"></ui-view>
         </div>
+    </div>
+    <div class="popupform loginform" ng-show="login">
+        <h1>Login</h1>
+        <form ng-submit="submitLogin()" name="loginForm" method="post" data-toggle="validator">
+            <div class="loginerror" ng-show="loginerror">
+                Login failed - try again!
+            </div>
+            <div class="form-group has-feedback">
+                <label for="username"><span class="glyphicon glyphicon-user"></span> Username</label>
+                <input ng-model="loginform.username" type="text" name="username" value="" class="form-control" placeholder="Enter your username" data-minlength="5" data-error="Usernames are 5+ characters" required>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                <div class="help-block with-errors"></div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="password"><span class="glyphicon glyphicon-lock"></span> Enter a Password</label>
+                <input ng-model="loginform.password" type="text" name="password" value="" class="form-control" placeholder="Enter your password" data-minlength="6" data-error="Passwords are 5+ characters" required>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                <div class="help-block with-errors"></div>
+            </div>
+            <button type="submit" class="btn btn-warning">Login</button>
+        </form>
+    </div>
+    <div class="popupform signupform" ng-show="signup">
+        <h1>Sign Up</h1>
+        <form ng-submit="submitSignUp()" class="sign-up" method="post" data-toggle="validator">
+            <div class="signuperror" ng-show="signuperror">
+                Username already taken!
+            </div>
+            <div class="form-group">
+                <label for="first_name" class="control-label"><span class="glyphicon glyphicon-vcard"></span> Name</label>
+                <div class="form-inline row">
+                    <div class="form-group has-feedback col-sm-6">
+                        <input ng-model="signupform.first_name" type="text" name="first_name" value="" class="form-control" placeholder="First name" required>
+                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group has-feedback col-sm-6">
+                        <input ng-model="signupform.last_name" type="text" name="last_name" value="" class="form-control" placeholder="Last name" required>
+                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="email"><span class="glyphicon glyphicon-envelope"></span> Email</label>
+                <input ng-model="signupform.email" type="email" name="email" value="" class="form-control" placeholder="Enter your email address" data-minlength="6" data-error="Not a valid email address" required>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                <div class="help-block with-errors"></div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="username"><span class="glyphicon glyphicon-user"></span> Create a Username</label>
+                <input ng-model="signupform.username" type="text" name="username" value="" class="form-control" placeholder="Enter a username" data-minlength="5" data-error="Usernames must be at least 5 characters" required>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                <div class="help-block with-errors"></div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="password"><span class="glyphicon glyphicon-lock"></span> Enter a Password</label>
+                <input id="firstpass" ng-model="signupform.password" type="text" name="password" value="" class="form-control" placeholder="Enter a password" data-minlength="5" data-error="Passwords must be at least 5 characters" required>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                <div class="help-block with-errors"></div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="password2"><span class="glyphicon glyphicon-lock"></span> Confirm Password</label>
+                <input type="text" name="password2" value="" class="form-control" placeholder="Enter a password" data-match="#firstpass" data-error="Passwords do not match" required>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                <div class="help-block with-errors"></div>
+            </div>
+            <button type="submit" class="btn btn-warning">Sign up</button>
+        </form>
     </div>
 </body>
 
@@ -116,6 +122,15 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
 <!-- Bootstrap Switch -->
 <script src="js/bootstrap-switch.js"></script>
-
+<script type="text/javascript">
+    $(document).ready(function (){
+        var navheight = 0;
+        var right = 0;
+        navheight = $('#row1').height();
+        right = $('.userDiv').position().right;
+        $(".popupform").css('top', navheight);
+        $(".popupform").css('right', 0);
+    });
+</script>
 
 </html>
