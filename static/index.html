@@ -8,8 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Ubuntu|Work+Sans:200,400,500,600,800" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Angular -->
     <script src="js/angular.js"></script>
@@ -32,9 +34,10 @@
                             welcome&nbsp;<strong style="color: #0089d0;">{{user.first_name}}</strong>!
                         </div>
                         <button class="btn logout" type="button" ng-click="logout()">Log Out</button>
-                        <button class="btn viewcart" type="button" ng-click="viewCart()">View Cart&nbsp;&nbsp;<span class="badge">3</span></button>
+                        <button class="btn viewcart" type="button" ng-click="viewCart()">View Cart&nbsp;&nbsp;<span ng-show="numItems > 0" class="badge">{{numItems}}</span></button>
                     </div>
                     <div class="loginDiv" ng-hide="loggedin">
+                        <span>Login or Sign up to start shopping!</span>
                         <button class="btn viewcart" type="button" ng-click="openLogin()">Login</button>
                         <button class="btn viewcart" type="button" name="signup" ng-click="openSignUp()">Sign Up</button>
                     </div>

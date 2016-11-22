@@ -10,6 +10,9 @@
             <tr ng-repeat="product in cart">
                 <td>{{product.name}}</td>
                 <td>$ {{product.price}}</td>
+                <td>
+                    <i class="fa fa-times" ng-click="removeFromCart(product.prod_id)"></i>
+                </td>
             </tr>
             <tr class="tableTotal">
                 <td>TOTAL</td>

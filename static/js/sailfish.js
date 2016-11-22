@@ -88,6 +88,16 @@ app.factory('API', function($http) {
         });
     };
 
+    service.removeFromCart = function(token, product_id) {
+        var url = 'http://localhost:5000/api/remove_item';
+        return $http({
+            method: 'POST',
+            url: url,
+            data: {'auth_token': token,
+                   'product_id': product_id}
+        });
+    };
+
     service.getCart = function(token) {
         var url = 'http://localhost:5000/api/shopping_cart';
         return $http({
@@ -113,25 +123,34 @@ app.factory('API', function($http) {
 });
 
 app.controller('NavController', function($scope, $state, $cookies, $rootScope, API){
-    $scope.login = false;
-    $scope.loginerror = false;
-    $scope.loginform = {};
-    $scope.signup = false;
-    $scope.signuperror = false;
-    $scope.signupform = {};
-    if ($rootScope.user !== undefined){
-        $rootScope.loggedin = true;
-    } else {
-        $rootScope.loggedin = false;
+    $rootScope.getNumItems = function(){
+        API.getCart(API.auth_token)
+            .success(function(results) {
+                $scope.numItems = results[0].length;
+                console.log($scope.numItems);
+            });
+    };
+
+    $rootScope.login = false;
+    $rootScope.loginerror = false;
+    $rootScope.loginform = {};
+    $rootScope.signup = false;
+    $rootScope.signuperror = false;
+    $rootScope.signupform = {};
+    if ($rootScope.loggedin === true){
+        $rootScope.getNumItems();
+    } else if ($rootScope.loggedin === false){
         try {
             $rootScope.user = $cookies.getObject('user').user;
             API.auth_token = $cookies.getObject('user').auth_token;
             $rootScope.loggedin = true;
+            $rootScope.getNumItems();
         } catch (e) {
 
         }
+    } else {
+        $rootScope.loggedin = false;
     }
-    console.log($rootScope.loggedin);
     $scope.openLogin = function(){
         $scope.login= !$scope.login;
         $scope.signup = false;
@@ -167,44 +186,82 @@ app.controller('NavController', function($scope, $state, $cookies, $rootScope, A
         API.auth_token = undefined;
         $rootScope.user = undefined;
         $rootScope.loggedin = false;
+        $state.go('products', {});
     };
 
     $scope.viewCart = function() {
         $state.go('view_cart', {});
     };
 
-    API.getCart(API.auth_token)
-        .success(function(results) {
-            console.log($scope.numItems = results[0].length);
-        })
-        .error(function(){
-            console.log("problem showing cart");
-        });
-
-
 });
 
-app.controller('ProductsController', function($scope, $state, API){
+app.controller('ProductsController', function($scope, $state, $rootScope, API){
     API.allProducts()
         .success(function(productResults) {
             $scope.products = productResults;
         });
+
+        $scope.addToCart = function(prod_id){
+            if ($rootScope.loggedin){
+                API.addToCart(API.auth_token, prod_id)
+                    .success(function(result) {
+                        $rootScope.getNumItems();
+                    });
+            } else {
+                $rootScope.login = true;
+            }
+
+        };
 });
 
-app.controller('ProductController', function($scope, $state, $stateParams, API){
+app.controller('ProductController', function($scope, $state, $stateParams, $rootScope, API){
     API.getProduct($stateParams.id)
         .success(function(product) {
             $scope.product = product;
         });
-    $scope.addToCart = function(){
-        API.addToCart(API.auth_token, $stateParams.id)
-            .success(function(result) {
-                console.log('added to cart');
+
+        $scope.addToCart = function(prod_id){
+            if ($rootScope.loggedin){
+                API.addToCart(API.auth_token, prod_id)
+                    .success(function(result) {
+                        $rootScope.getNumItems();
+                    });
+            } else {
+                $rootScope.login = true;
+            }
+
+        };
+});
+
+app.controller('CartController', function($scope, $state, $rootScope, API){
+    $scope.getCart = function(){
+        API.getCart(API.auth_token)
+            .success(function(results) {
+                $scope.cart = results[0];
+                $scope.total = results[1][0].total;
+                if ($scope.cart.length > 0){
+                    $scope.hasItems = true;
+                } else {
+                    $scope.hasItems = false;
+                }
+            })
+            .error(function(){
+                console.log("problem showing cart");
             });
+    };
+
+    $scope.getCart();
+
+    $scope.removeFromCart = function(prod_id) {
+        console.log(prod_id);
+        API.removeFromCart(API.auth_token, prod_id).success(function(result){
+            $rootScope.getNumItems();
+            $scope.getCart();
+        });
     };
 });
 
-app.controller('CartController', function($scope, $state, API){
+app.controller('CheckoutController', function($scope, $state, API){
     API.getCart(API.auth_token)
         .success(function(results) {
             $scope.cart = results[0];
@@ -218,32 +275,15 @@ app.controller('CartController', function($scope, $state, API){
         .error(function(){
             console.log("problem showing cart");
         });
-});
-
-app.controller('CheckoutController', function($scope, $state, API){
-    $scope.shippingform = {};
-    $scope.paymentform = {};
-
-    API.getCart(API.auth_token)
-        .success(function(results) {
-            $scope.cart = results[0];
-            $scope.total = results[1][0].total;
-            if ($scope.cart.length > 0){
-                $scope.hasItems = true;
-            } else {
-                $state.go('view_cart');
-            }
-        })
-        .error(function(){
-            console.log("problem showing cart");
-        });
 
     $scope.submitCheckoutForm = function() {
-        console.log($scope.shippingform);
-        API.checkout(API.auth_token, $scope.shippingform).success(function(){
-            $state.go('thank_you', {});
-        });
-
+        $scope.shippingform = {};
+        $scope.paymentform = {};
+        $scope.submitCheckoutForm = function() {
+            API.checkout(API.auth_token, $scope.shippingform).success(function(){
+                    $state.go('thank_you', {});
+                });
+        };
     };
 });
 

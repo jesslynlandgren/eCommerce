@@ -1,7 +1,17 @@
-<div class="col-sm-10 col-sm-offset-1">
-    <div class="productsGrid">
+<div class="col-sm-10 col-sm-offset-1 productsGrid">
+    <!-- <div class="productsGrid">
         <div class="productInGrid" ng-repeat="product in products">
             <img class="prodimg" ui-sref="product({id:product.id})" ng-src="/img/{{product.image_path}}" alt="" />
+        </div>
+    </div> -->
+    <div class="productcard well" ng-repeat="product in products track by $index">
+        <div class="productImg">
+            <img class="prodimg" ui-sref="product({id:product.id})" ng-src="/img/{{product.image_path}}" alt="" />
+        </div>
+        <div class="productInfo">
+            <h4 ui-sref="product({id:product.id})">{{product.name}}</h4>
+            <h4 ui-sref="product({id:product.id})" class="orange">${{product.price}}</h4>
+            <button ng-click="addToCart(product.id)" type="button" class="btn btn-warning">Add to Cart</button>
         </div>
     </div>
 </div>

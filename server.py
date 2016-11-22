@@ -73,7 +73,6 @@ def login():
 def shopping_cart():
     # Validates auth_token
     auth_token = request.get_json().get('auth_token')
-    print auth_token
     check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
     if len(check_token) > 0:
         #If authenticated user
@@ -82,6 +81,22 @@ def shopping_cart():
         #stores product in the shopping cart table linked to the authenticated user's id
         db.insert('product_in_shopping_cart', product_id=prod_id, customer_id=customer.customer_id)
         return 'Product Added to Cart', 200
+    else:
+        # If not authenticated user
+        return 'Not authorized', 403
+
+# Adds a product to an authenticated user's shopping cart
+@app.route('/api/remove_item', methods=['POST'])
+def remove_item():
+    # Validates auth_token
+    auth_token = request.get_json().get('auth_token')
+    check_token = db.query('select * from auth_token where token = $1', auth_token).namedresult()
+    if len(check_token) > 0:
+        #If authenticated user
+        customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
+        prod_id = request.get_json().get('product_id')
+        db.query('delete from product_in_shopping_cart as a where a.id in (select b.id from product_in_shopping_cart as b where b.product_id = $1 and b.customer_id = $2 order by b.id desc limit 1)', prod_id, customer.customer_id)
+        return 'Product Removed from Cart', 200
     else:
         # If not authenticated user
         return 'Not authorized', 403
@@ -96,7 +111,7 @@ def get_shop():
         # If authenticated user
         customer = db.query('select customer_id from auth_token where token = $1', auth_token).namedresult()[0]
         # Queries all products in the user's shopping cart
-        current_cart = db.query('select product.name as name, product.price as price, product.description as description, product.image_path as image_path from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
+        current_cart = db.query('select product.id as prod_id, product.name as name, product.price as price, product.description as description, product.image_path as image_path from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
 
         total = db.query('select sum(product.price) as total from product_in_shopping_cart, product where product_in_shopping_cart.product_id = product.id and customer_id =$1', customer.customer_id).dictresult()
         # Returns results in JSON format
