@@ -30,16 +30,20 @@
                 </div>
                 <div class="col-sm-7 userDiv">
                     <div class="loginDiv" ng-show="loggedin">
-                        <div class="welcome">
+                        <div class="welcomeLoggedIn">
                             welcome&nbsp;<strong style="color: #0089d0;">{{user.first_name}}</strong>!
                         </div>
-                        <button class="btn logout" type="button" ng-click="logout()">Log Out</button>
-                        <button class="btn viewcart" type="button" ng-click="viewCart()">View Cart&nbsp;&nbsp;<span ng-show="numItems > 0" class="badge">{{numItems}}</span></button>
+                        <div class="loginButtons">
+                            <a class="outlineButton" type="button" ng-click="logout()">Log Out</a>
+                            <a class="solidButton" type="button" ng-click="viewCart()">View Cart&nbsp;&nbsp;<span ng-show="numItems > 0" class="badge">{{numItems}}</span></a>
+                        </div>
                     </div>
                     <div class="loginDiv" ng-hide="loggedin">
-                        <span>Login or Sign up to start shopping!</span>
-                        <button class="btn viewcart" type="button" ng-click="openLogin()">Login</button>
-                        <button class="btn viewcart" type="button" name="signup" ng-click="openSignUp()">Sign Up</button>
+                        <div class="welcomeNotLoggedIn">Sign Up or Login to start shopping!</div>
+                        <div class="loginButtons">
+                            <a class="outlineButton" type="button" name="signup" ng-click="openSignUp()">Sign Up</a>
+                            <a class="solidButton" type="button" ng-click="openLogin()">Login</a>
+                        </div>
                     </div>
                 </div>
             </div>

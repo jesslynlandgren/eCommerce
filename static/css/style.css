@@ -61,18 +61,7 @@ ul {
     margin: 0 0 0 0;
 }
 
-.loginDiv button,
-.loginDiv button:active{
-    margin-left: 10px;
-    font-size: 1.3em;
-    color: #f47920;
-}
-
-.loginDiv button:focus {
-    outline: none;
-}
-
-.welcome {
+.welcomeLoggedIn {
     /*border: 4px solid blue;*/
     display: flex;
     align-items: center;
@@ -80,25 +69,31 @@ ul {
     margin-right: 20px;
 }
 
-.logout {
-    /*border: 3px solid red;
-    border-radius: 20px;
-    padding: 10px 20px 10px 20px;*/
-    background-color: rgba(255, 255, 255, 0);
+.welcomeNotLoggedIn {
+    /*border: 4px solid blue;*/
+    margin-right: 20px;
 }
 
-.viewcart {
-    border: 3px solid #f47920;
-    border-radius: 20px;
-    padding: 10px 20px 10px 20px;
-    background-color: rgba(255, 255, 255, 0);
+.loginButtons {
+    border: 3px solid #ff851b;
 }
 
-.viewcart:hover {
-    color: white;
-    border-radius: 20px;
-    padding: 10px 20px 10px 20px;
-    background-color: #f47920;
+.outlineButton,
+.outlineButton:hover {
+    color: #ff851b;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    text-decoration: none;
+    padding: 10px 10px 10px 10px;
+}
+
+.outlineButton,
+.outlineButton:hover {
+    color: #ff851b;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    text-decoration: none;
+    padding: 10px 10px 10px 10px;
 }
 
 .popupform {
